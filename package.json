@@ -1,0 +1,7 @@
+{
+  "name": "com.koi.horrorgameengine",
+  "version": "0.1.0",
+  "displayName": "Horror Game Engine",
+  "description": "An Horror Game Framework that adds complex horror game mechanics with easy to use interface",
+  "unity": "6000.3"
+}
