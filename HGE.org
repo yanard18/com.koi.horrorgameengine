@@ -1,0 +1,81 @@
+* Project
+1. If any change requested, requester must offer an alternative idea.
+2. User documentation should ve written integrated to development of the project.
+3. Code must be documentad as well via [[https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments][documentation-commenting]].
+
+** Project Summary
+Horror Game Engine is a game development kit that let developers develop horror games without any programming however still extendible for programmers as well.
+
+* Requirements
+* Naming Conventions
+** Folder Structure
+#+BEGIN_SRC text
+<package-root>
+  ├── package.json
+  ├── README.md
+  ├── CHANGELOG.md
+  ├── Third Party Notices.md
+  ├── Prefabs
+  ├── 
+  ├── Editor
+  │   ├── <organization-name>.<package-name>.Editor.asmdef
+  │   └── EditorExample.cs
+  ├── Runtime
+  │   ├── <organization-name>.<package-name>.asmdef
+  │   └── RuntimeExample.cs
+  ├── Tests
+  │   ├── Editor
+  │   │   ├── <organization-name>.<package-name>.Editor.Tests.asmdef
+  │   │   └── EditorExampleTest.cs
+  │   └── Runtime
+  │        ├── <organization-name>.<package-name>.Tests.asmdef
+  │        └── RuntimeExampleTest.cs
+  ├── Samples
+  │        ├── Example
+  │        └── ...
+  └── Documentation
+       └── <package-name>.(md or html)
+#+END_SRC
+Documentation:
+This folder contains user documentation of the project.
+1. This folder must contain one markdown file
+2. Or host the documentation online
+refer: https://docs.unity3d.com/6000.3/Documentation/Manual/cus-document.html
+
+Samples:
+Follow the UPM file struce provided as in Unity docs.
+refer: https://docs.unity3d.com/6000.3/Documentation/Manual/cus-samples.html
+
+** Asset Types
+
+| Asset Type           | Prefix | Suffix (or description)                        |
+|----------------------+--------+------------------------------------------------|
+| Prefab               |        |                                                |
+| Material             | M_     |                                                |
+| Material Instance    | MI_    |                                                |
+| Physic Material      | PM_    |                                                |
+| Texture Albedo       | T_     | _A                                             |
+| Texture Normal       | T_     | _N                                             |
+| Texture Height       | T_     | _B                                             |
+| Texture Emissive     | T_     | _E                                             |
+| Texture Metallic     | T_     | _M                                             |
+| Texture Roughness    | T_     | _R                                             |
+| Texture Mixed        | T_     | _MRH (prefix ordered by channels)              |
+| Shaders              | SH_    |                                                |
+| Audio Cues           | AC_    |                                                |
+| Audio Mixer          | MIX_   |                                                |
+| Skeletal Mesh        | SK_    | (Assets with bone system are skeletal meshes)  |
+| Static Mesh          | SM_    | (Assets without bone system are static meshes) |
+| Animation Clip       | A_     |                                                |
+| Animation Controller | AC_    |                                                |
+| Avatar Mask          | AM_    |                                                |
+| Particle System      | PS_    |                                                |
+
+
+
+
+
+
+
+
+	
