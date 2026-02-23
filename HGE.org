@@ -2,11 +2,88 @@
 1. If any change requested, requester must offer an alternative idea.
 2. User documentation should ve written integrated to development of the project.
 3. Code must be documentad as well via [[https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments][documentation-commenting]].
+4. First viable version must be implemented for Singleplayer & FPS
+
 
 ** Project Summary
-Horror Game Engine is a game development kit that let developers develop horror games without any programming however still extendible for programmers as well.
+Horror Game Engine is a game development kit primarly designed for FPS games that let developers develop
+horror games without any programming however still extendible for programmers as well.
 
 * Requirements
+
+** Functional Requirements
+
+- Game Effect Manager
+- Sound Engine
+- Trigger Mechanic
+- Scene Loader
+- Tetris Inventory
+- Single Inventory
+- Flashlight
+- Battery Power System
+- Cameras (CCTV like)
+- Doors
+- Camera like HUD
+- Head-Bob system
+- FPS Player Movement
+- Behaviour Tree
+- AI Builder
+- Quest System
+- Puzzle System
+- Inspect
+- Interaction
+- Hiding
+- Options Menu
+- Input System
+- Dialogue System
+- Cutscene Manager
+- Shop System
+- Health System
+- Drag System
+
+** Optional Functional Requirements
+- TPS Mechanic
+- Procedural Asset Placement
+- Procedural Environment Generation
+
+*** Player Movement
+1. Jump
+2. Crouch
+3. Acceleration and Deacceleration
+4. Slope Climb Configuration
+5. Slap Movement
+6. Run
+7. Stamina
+8. Prone
+9. Head Bob
+10. Lag Camera Movement
+11. Customizable FPS Hand
+
+*** Dialogue System
+1. Different languages support
+*** Sound Engine
+Analyze great sound engines from other projects like Gta V source code or FMOD Unity asset
+1. Atmoshperic Sound
+2. Object Pooling for spawning audio emitters
+3. Alternative method to find audio cues end emit audio on them instead of spawning from pool 
+*** Doors
+1. Physic base doors
+2. Control door with mouse movement
+3. Classic interact-open doors
+
+** Non-Functional Requirements
+1. Interfaces must provide optional usages. I.e., if sound engine prefer dynamic audio cue spawn, also add
+   alternative functions to run audio cues on already placed audio componenst (non dynamic spawn)
+2. Each game system must be usable and configurable without any need of programming however systems must be extendible
+   for programmers who wants to extend the code.
+3. Different systems should share similar UI interfaces to remove duplication and increase consistency.
+4. Use Unity's New UI toolkit for both main menu UI and custom editor UI.
+5. Apply Unit Testing
+
+* Project Risk Matrix
+- R0: Can not found royalty free sound assets
+
+  
 * Naming Conventions
 ** Folder Structure
 #+BEGIN_SRC text
@@ -71,11 +148,17 @@ refer: https://docs.unity3d.com/6000.3/Documentation/Manual/cus-samples.html
 | Avatar Mask          | AM_    |                                                |
 | Particle System      | PS_    |                                                |
 
+** Git Structure
+1. Use master branch only when the feature is fully complete and safe (HAHA what's unsafe in c#???)
+2. Main branch is =master=.
+3. Second branch is =master/develop=, behave as a safe layer before pushing fetures to master.
+4. Third branch is =develop/feature=, for each future use a separate feature branch.
+
+1. Commits must be atomic.
+2. Each commit name must be written in impretive mood.
+
+** Code Convention
+In general follow [[https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions][.NET Common C# Conventions]]
+For naming convention follow [[https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names][.NET Naming Conventions]]
 
 
-
-
-
-
-
-	
