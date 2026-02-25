@@ -4,7 +4,6 @@
 3. Code must be documentad as well via [[https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/language-specification/documentation-comments][documentation-commenting]].
 4. First viable version must be implemented for Singleplayer & FPS
 
-
 ** Project Summary
 Horror Game Engine is a game development kit primarly designed for FPS games that let developers develop
 horror games without any programming however still extendible for programmers as well.
@@ -13,10 +12,12 @@ horror games without any programming however still extendible for programmers as
 
 ** Functional Requirements
 
-- Game Effect Manager
 - Sound Engine
-- Trigger Mechanic
+- Game Effect Manager
+- FPS Player Movement
 - Scene Loader
+- AI Agent
+- Trigger Mechanic
 - Tetris Inventory
 - Single Inventory
 - Flashlight
@@ -25,7 +26,6 @@ horror games without any programming however still extendible for programmers as
 - Doors
 - Camera like HUD
 - Head-Bob system
-- FPS Player Movement
 - Behaviour Tree
 - AI Builder
 - Quest System
@@ -40,12 +40,20 @@ horror games without any programming however still extendible for programmers as
 - Shop System
 - Health System
 - Drag System
+- Documentation
 
-** Optional Functional Requirements
-- TPS Mechanic
-- Procedural Asset Placement
-- Procedural Environment Generation
+*** AI Agents
+AI Agent mechanic is the area that we want to put extra effort. Developers must be able to design AI characters without need of programming.
 
+1. Classic AI characters must be implementable without coding
+2. AI Sensing modules
+3. AI Movement modules
+4. AI Path Finding
+5. Unreal Engine inspired EQS system
+6. Behaviour Tree
+   1. Behaviour Tree's graph editor can be used in other tools in future
+
+*** Quest System
 *** Player Movement
 1. Jump
 2. Crouch
@@ -58,18 +66,23 @@ horror games without any programming however still extendible for programmers as
 9. Head Bob
 10. Lag Camera Movement
 11. Customizable FPS Hand
-
-*** Dialogue System
-1. Different languages support
 *** Sound Engine
 Analyze great sound engines from other projects like Gta V source code or FMOD Unity asset
 1. Atmoshperic Sound
 2. Object Pooling for spawning audio emitters
 3. Alternative method to find audio cues end emit audio on them instead of spawning from pool 
+*** Dialogue System
+1. Different languages support
 *** Doors
 1. Physic base doors
 2. Control door with mouse movement
 3. Classic interact-open doors
+
+** Optional Functional Requirements
+- TPS Mechanic
+- Procedural Asset Placement
+- Procedural Environment Generation
+- Forge AI Integration
 
 ** Non-Functional Requirements
 1. Interfaces must provide optional usages. I.e., if sound engine prefer dynamic audio cue spawn, also add
@@ -78,7 +91,8 @@ Analyze great sound engines from other projects like Gta V source code or FMOD U
    for programmers who wants to extend the code.
 3. Different systems should share similar UI interfaces to remove duplication and increase consistency.
 4. Use Unity's New UI toolkit for both main menu UI and custom editor UI.
-5. Apply Unit Testing
+5. Apply Unit Testing.
+6. Designs must be competible for future development of multiplayer integration.
 
 * Project Risk Matrix
 - R0: Can not found royalty free sound assets
@@ -93,7 +107,6 @@ Analyze great sound engines from other projects like Gta V source code or FMOD U
   ├── CHANGELOG.md
   ├── Third Party Notices.md
   ├── Prefabs
-  ├── 
   ├── Editor
   │   ├── <organization-name>.<package-name>.Editor.asmdef
   │   └── EditorExample.cs
@@ -161,4 +174,14 @@ refer: https://docs.unity3d.com/6000.3/Documentation/Manual/cus-samples.html
 In general follow [[https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions][.NET Common C# Conventions]]
 For naming convention follow [[https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/identifier-names][.NET Naming Conventions]]
 
+** Task Management
+Prefer simple. Use whatsapp for communication and do not use any task management tool.
+However each feature must have its own branch, which indicates the WIP feature.
+Commit names must be clear and atomic.
+Still GitHub issues can be used to note down a feature or a bug.
+
+** File Management
+Use Google Drive for external files (references, external docs, blender files...).
+Use Google Drive for file sharing.
+Use Git LFS for project's repo.
 
