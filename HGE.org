@@ -136,7 +136,7 @@ Samples:
 Follow the UPM file struce provided as in Unity docs.
 refer: https://docs.unity3d.com/6000.3/Documentation/Manual/cus-samples.html
 
-** Asset Types
+** Asset Naming Conventions
 
 | Asset Type           | Prefix | Suffix (or description)                        |
 |----------------------+--------+------------------------------------------------|
@@ -162,13 +162,14 @@ refer: https://docs.unity3d.com/6000.3/Documentation/Manual/cus-samples.html
 | Particle System      | PS_    |                                                |
 
 ** Git Structure
+*** Branches
 1. Use master branch only when the feature is fully complete and safe (HAHA what's unsafe in c#???)
 2. Main branch is =master=.
 3. Second branch is =master/develop=, behave as a safe layer before pushing fetures to master.
 4. Third branch is =develop/feature=, for each future use a separate feature branch.
-
-1. Commits must be atomic.
-2. Each commit name must be written in impretive mood.
+*** Commits
+a. Commits must be atomic.
+b. Each commit name must be written in impretive mood.
 
 ** Code Convention
 In general follow [[https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions][.NET Common C# Conventions]]
