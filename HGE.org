@@ -12,10 +12,10 @@ horror games without any programming however still extendible for programmers as
 
 ** Functional Requirements
 
+- FPS Player Movement
+- Scene Management
 - Sound Engine
 - Game Effect Manager
-- FPS Player Movement
-- Scene Loader
 - AI Agent
 - Trigger Mechanic
 - Tetris Inventory
@@ -41,6 +41,51 @@ horror games without any programming however still extendible for programmers as
 - Health System
 - Drag System
 - Documentation
+- Slender The Eight Pages Demo
+  
+*** FPS Player Movement
+FPS player movement is the core element of the horror game engine. Also start point of the project. One monolithic class that we can warmup as a team.
+It will also reflect what other classes we will need in the future. I.e., step sound implementation will reveal the need of *sound engine*.
+
+Make a design decision before start, how the player hand should be implemented. Procedural, blender exported or hybrid?
+Write user requirements to identify various needs of FPS hand.
+
+Multiplayer integration must start at this point. It's wise to analyze Unity's builtin multiplayer solution with classic FPS movement code in order to
+make our singleplayer design extendible for future.
+
+Do not forgot to documentate the code while develop.
+
+*Functional Sub-Requirements*:
+1. Jump
+   1. Remember jump input (if input released 0.1 sec ago; still should jump)
+   2. Remember ground leave (if leave ground 0.1 sec ago; still should jump)
+2. Crouch
+3. Acceleration and Deacceleration
+4. Slope Climb Configuration
+5. Slap Movement
+6. Run
+7. Stamina
+8. Prone
+9. Head Bob
+10. Lag Camera Movement
+11. Customizable FPS Hand
+13. Step Sound
+
+*System Sub-Requirements*
+1. Documentated
+2. Multiplayer Extendibility
+   
+*** Scene Management
+How we load scenes is a important process of designing a framework. We can (and probably should) enforce a rigid system to load and play scenes.
+Unreal Engine has a similar system called "experiences".
+But more importantly it will define that how we will initiate the dependencies. I.e., a dependency injection like system.
+
+*Functional Sub-Requirements*:
+1. Async level loading and unloading
+2. Dependeny intialization
+3. Handling persistent objects
+4. Player start logic
+5. Multiplayer compatible
 
 *** AI Agents
 AI Agent mechanic is the area that we want to put extra effort. Developers must be able to design AI characters without need of programming.
@@ -54,18 +99,7 @@ AI Agent mechanic is the area that we want to put extra effort. Developers must 
    1. Behaviour Tree's graph editor can be used in other tools in future
 
 *** Quest System
-*** Player Movement
-1. Jump
-2. Crouch
-3. Acceleration and Deacceleration
-4. Slope Climb Configuration
-5. Slap Movement
-6. Run
-7. Stamina
-8. Prone
-9. Head Bob
-10. Lag Camera Movement
-11. Customizable FPS Hand
+
 *** Sound Engine
 Analyze great sound engines from other projects like Gta V source code or FMOD Unity asset
 1. Atmoshperic Sound
@@ -94,9 +128,25 @@ Analyze great sound engines from other projects like Gta V source code or FMOD U
 5. Apply Unit Testing.
 6. Designs must be competible for future development of multiplayer integration.
 
-* Project Risk Matrix
-- R0: Can not found royalty free sound assets
+* Project Risk Management
+** Riskes
+- R0: Can not find royalty free sound assets
+- R1: Sales goes under 100$ per month
+- R2: Final design is not multiplayer extendible
+- R3: Development not finished in two months.
 
+** Pre-active Plan to Prevent
+- R0: Documentate what sounds will be required before release.
+- R1: Check [[#Sales Plan]] header.
+- R2:
+- R3: Milestones and time estimation.
+
+** If Risk Happens
+- R0: Releasing packet without sounds or buy from fiverr
+- R1:
+- R2: 
+- R3: 
+- R4: 
   
 * Naming Conventions
 ** Folder Structure
@@ -185,4 +235,18 @@ Still GitHub issues can be used to note down a feature or a bug.
 Use Google Drive for external files (references, external docs, blender files...).
 Use Google Drive for file sharing.
 Use Git LFS for project's repo.
+
+
+* Milestones
+
+Handle this on a google sheet later.
+
+* Sales Plan
+:PROPERTIES:
+:CUSTOM_ID: Sales Plan
+:END:
+
+1. Publish the packet in Unity Asset Store
+2. Use Reddit for taking feedback
+3. Offer developers to join alpha version to test the product in return of giving feedbacks
 
