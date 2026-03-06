@@ -205,12 +205,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1771187194}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &330585547
 MonoBehaviour:
@@ -544,6 +544,31 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1771187191 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3157949447705770711, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+  m_PrefabInstance: {fileID: 5961542708368110420}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1771187192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1771187191}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65ed3642478d2a158b9bc781c9b9015d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HorrorGameEngine.Runtime::KOI.HorrorGameEngine.Player
+  _moveSpeed: 12
+  _gravity: -9.81
+  _jumpHeight: 3
+--- !u!4 &1771187194 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 444875449421910815, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+  m_PrefabInstance: {fileID: 5961542708368110420}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5961542708368110420
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -598,14 +623,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 444875449421910815, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 330585546}
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3157949447705770711, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1771187192}
   m_SourcePrefab: {fileID: 100100000, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
-  - {fileID: 330585546}
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 439175934}
