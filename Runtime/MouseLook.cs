@@ -4,64 +4,40 @@ namespace KOI.HorrorGameEngine
 {
     public class MouseLook : MonoBehaviour
     {
-        [Header("Settings")]
-        [Tooltip("Suggested range: 1 to 5")]
+        [SerializeField] private GameObject _playerCharacter;
         [SerializeField] private float _mouseSensitivity = 2f;
-        [SerializeField] private bool _invertY = false;
+        [SerializeField] private float _interpolationSpeed = 15f;
+        [SerializeField] private float _minPitch = -90f;
+        [SerializeField] private float _maxPitch = 90f;
 
-        [Header("Mouse Smoothing")]
-        [SerializeField] private bool _useSmoothing = true;
-        [Tooltip("Higher = smoother but slightly more delayed. 0.03 to 0.05 is the sweet spot.")]
-        [SerializeField] private float _smoothTime = 0.03f;
-
-        [Header("References")]
-        [Tooltip("Drag the parent Player object here")]
-        [SerializeField] private Transform _playerBody;
-
-        private float _xRotation;
-        
-        private Vector2 _currentMouseDelta;
-        private Vector2 _currentMouseVelocity;
+        private Quaternion _rotationCamera;
+        private Quaternion _rotationCharacter;
+        private float _pitch;
+        private float _yaw;
 
         private void Start()
         {
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            _rotationCamera = transform.localRotation;
+            _rotationCharacter = _playerCharacter.transform.rotation;
         }
 
-        private void Update() 
+        private void LateUpdate()
         {
-            var targetMouseDelta = new Vector2(
-                Input.GetAxisRaw("Mouse X"), 
-                Input.GetAxisRaw("Mouse Y")
-            );
+            var mouseX = Input.GetAxisRaw("Mouse X") * _mouseSensitivity;
+            var mouseY = Input.GetAxisRaw("Mouse Y") * _mouseSensitivity;
 
-            if (_useSmoothing)
-            {
-                _currentMouseDelta = Vector2.SmoothDamp(
-                    _currentMouseDelta, 
-                    targetMouseDelta, 
-                    ref _currentMouseVelocity, 
-                    _smoothTime
-                );
-            }
-            else
-            {
-                _currentMouseDelta = targetMouseDelta;
-            }
+            _yaw += mouseX;
+            _pitch -= mouseY;
+            _pitch = Mathf.Clamp(_pitch, _minPitch, _maxPitch);
 
-            var mouseX = _currentMouseDelta.x * _mouseSensitivity;
-            var mouseY = _currentMouseDelta.y * _mouseSensitivity;
+            _rotationCamera = Quaternion.Euler(_pitch, 0f, 0f);
+            _rotationCharacter = Quaternion.Euler(0f, _yaw, 0f);
 
-            _xRotation += _invertY ? mouseY : -mouseY;
-            _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
-            
-            transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
-
-            if (_playerBody != null)
-            {
-                _playerBody.Rotate(Vector3.up * mouseX);
-            }
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, _rotationCamera, Time.deltaTime * _interpolationSpeed);
+            _playerCharacter.transform.rotation = 
+                Quaternion.Slerp(_playerCharacter.transform.rotation, _rotationCharacter, Time.deltaTime * _interpolationSpeed);
         }
     }
 }
