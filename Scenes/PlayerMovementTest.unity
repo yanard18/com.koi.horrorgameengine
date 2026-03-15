@@ -311,7 +311,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 2a53392d904508ec1a1ccada6de029c2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -407,6 +407,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1949154830 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3157949447705770711, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+  m_PrefabInstance: {fileID: 5961542708368110420}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5961542708368110420
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -458,6 +463,54 @@ PrefabInstance:
     - target: {fileID: 3157949447705770711, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 7042160488796216230, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      propertyPath: _maxSpeed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7042160488796216230, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      propertyPath: _jumpHeight
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7042160488796216230, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      propertyPath: _maxAirSpeed
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7042160488796216230, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      propertyPath: _airAcceleration
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7042160488796216230, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      propertyPath: _airDeceleration
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 7042160488796216230, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      propertyPath: _groundAcceleration
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7042160488796216230, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      propertyPath: _groundDeceleration
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8418467464207312051, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      propertyPath: _smoothTime
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8418467464207312051, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      propertyPath: playerCharacter
+      value: 
+      objectReference: {fileID: 1949154830}
+    - target: {fileID: 8418467464207312051, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      propertyPath: _playerCharacter
+      value: 
+      objectReference: {fileID: 1949154830}
+    - target: {fileID: 8418467464207312051, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      propertyPath: _mouseSensitivity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8418467464207312051, guid: 3c14dfac7511c11b7b0cab3c7dee38cf, type: 3}
+      propertyPath: interpolationSpeed
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
