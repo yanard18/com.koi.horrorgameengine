@@ -9,11 +9,19 @@ namespace KOI.HorrorGameEngine
         [SerializeField] private float _mouseSensitivity = 2f;
         [SerializeField] private bool _invertY = false;
 
+        [Header("Mouse Smoothing")]
+        [SerializeField] private bool _useSmoothing = true;
+        [Tooltip("Higher = smoother but slightly more delayed. 0.03 to 0.05 is the sweet spot.")]
+        [SerializeField] private float _smoothTime = 0.03f;
+
         [Header("References")]
         [Tooltip("Drag the parent Player object here")]
         [SerializeField] private Transform _playerBody;
 
         private float _xRotation;
+        
+        private Vector2 _currentMouseDelta;
+        private Vector2 _currentMouseVelocity;
 
         private void Start()
         {
@@ -21,20 +29,31 @@ namespace KOI.HorrorGameEngine
             Cursor.visible = false;
         }
 
-        private void LateUpdate()
+        private void Update() 
         {
-            var mouseX = Input.GetAxisRaw("Mouse X") * _mouseSensitivity;
-            var mouseY = Input.GetAxisRaw("Mouse Y") * _mouseSensitivity;
+            var targetMouseDelta = new Vector2(
+                Input.GetAxisRaw("Mouse X"), 
+                Input.GetAxisRaw("Mouse Y")
+            );
 
-            if (_invertY)
+            if (_useSmoothing)
             {
-                _xRotation += mouseY;
+                _currentMouseDelta = Vector2.SmoothDamp(
+                    _currentMouseDelta, 
+                    targetMouseDelta, 
+                    ref _currentMouseVelocity, 
+                    _smoothTime
+                );
             }
             else
             {
-                _xRotation -= mouseY;
+                _currentMouseDelta = targetMouseDelta;
             }
 
+            var mouseX = _currentMouseDelta.x * _mouseSensitivity;
+            var mouseY = _currentMouseDelta.y * _mouseSensitivity;
+
+            _xRotation += _invertY ? mouseY : -mouseY;
             _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
             
             transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
