@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 444875449421910815}
   - component: {fileID: 983279838254841516}
-  - component: {fileID: 7042160488796216230}
+  - component: {fileID: 2004206701444949531}
+  - component: {fileID: 7040565560436764605}
+  - component: {fileID: 440464871298061073}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -59,7 +61,7 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.9, z: 0}
---- !u!114 &7042160488796216230
+--- !u!114 &2004206701444949531
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -68,12 +70,43 @@ MonoBehaviour:
   m_GameObject: {fileID: 3157949447705770711}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65ed3642478d2a158b9bc781c9b9015d, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fd78df0136b32e45beef92c4ab16065, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: HorrorGameEngine.Runtime::KOI.HorrorGameEngine.Player
-  _moveSpeed: 12
-  _gravity: -9.81
-  _jumpHeight: 3
+  m_EditorClassIdentifier: HorrorGameEngine.Runtime::KOI.HorrorGameEngine.HorrorPlayerController
+  WalkSpeed: 12
+  CanJump: 1
+  JumpHeight: 3
+  MouseSensitivity: 2
+  _inputReader: {fileID: 11400000, guid: 7af987e60f56817148c41edc1bd6f139, type: 2}
+  _playerModel: {fileID: 11400000, guid: 79e5977e6da9051e9b4a1c4f7aceb2c4, type: 2}
+  _lookModel: {fileID: 11400000, guid: 3d6d65faa85e92e7fa0d22ee2cce8c08, type: 2}
+--- !u!114 &7040565560436764605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3157949447705770711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7e47d7a89be96633817bf0bbc3671f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HorrorGameEngine.Runtime::KOI.HorrorGameEngine.Player.PlayerView
+--- !u!114 &440464871298061073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3157949447705770711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e11e057a68eab5c4e9870d500871fa78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HorrorGameEngine.Runtime::KOI.HorrorGameEngine.Player.PlayerPresenter
+  _inputReader: {fileID: 11400000, guid: 7af987e60f56817148c41edc1bd6f139, type: 2}
+  _model: {fileID: 11400000, guid: 79e5977e6da9051e9b4a1c4f7aceb2c4, type: 2}
+  _view: {fileID: 7040565560436764605}
 --- !u!1 &3813953675775304865
 GameObject:
   m_ObjectHideFlags: 0
@@ -86,7 +119,8 @@ GameObject:
   - component: {fileID: 7343563433118277880}
   - component: {fileID: 5844983393803109069}
   - component: {fileID: 1175870680040734005}
-  - component: {fileID: 8418467464207312051}
+  - component: {fileID: 3807375942690477663}
+  - component: {fileID: 4526296318995670165}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -212,7 +246,7 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
---- !u!114 &8418467464207312051
+--- !u!114 &3807375942690477663
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -221,9 +255,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 3813953675775304865}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7788342cf99b4f0e813651d28fa6807f, type: 3}
+  m_Script: {fileID: 11500000, guid: 79efcbcbec8319288991c0bca4144627, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: HorrorGameEngine.Runtime::MouseLook
-  _mouseSensitivity: 2
-  _invertY: 0
-  _playerBody: {fileID: 444875449421910815}
+  m_EditorClassIdentifier: HorrorGameEngine.Runtime::KOI.HorrorGameEngine.Camera.MouseLookView
+  _playerCharacterTransform: {fileID: 444875449421910815}
+--- !u!114 &4526296318995670165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3813953675775304865}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adc0bc9dc02a30321adebb69328809d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HorrorGameEngine.Runtime::KOI.HorrorGameEngine.Camera.MouseLookPresenter
+  _inputReader: {fileID: 11400000, guid: 7af987e60f56817148c41edc1bd6f139, type: 2}
+  _model: {fileID: 11400000, guid: 3d6d65faa85e92e7fa0d22ee2cce8c08, type: 2}
+  _view: {fileID: 3807375942690477663}
