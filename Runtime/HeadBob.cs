@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace KOI.HorrorGameEngine
@@ -6,52 +8,60 @@ namespace KOI.HorrorGameEngine
     /// Procedural head-bob driven by <see cref="HeadBobProfile"/> assets.
     ///
     /// Attach to the CameraHolder (parent pivot of the Camera).
-    /// Writes localPosition and localRotation; does not conflict with MouseLook.
+    /// Writes localPosition and localRotation only — does not conflict with MouseLook.
     ///
     ///   Player  (CharacterController + PlayerMovement)
     ///     CameraHolder   ← HeadBob here
     ///       Main Camera  (Camera + MouseLook)
+    ///
+    /// Drop any number of HeadBobProfile assets into the Profiles list.
+    /// Each profile carries its own stateName. Switch between them by calling
+    /// <see cref="SetState"/> from any external script.
     /// </summary>
     public class HeadBob : MonoBehaviour
     {
-        public enum State { Idle, Walk, Jump }
-        public State CurrentState { get; private set; } = State.Idle;
-
         // ── Inspector ─────────────────────────────────────────────────────
 
-        [Header("References")]
-        [SerializeField] private CharacterController _characterController;
+        [Tooltip("All available profiles. Each profile's stateName is used by SetState().")]
+        [SerializeField] private List<HeadBobProfile> _profiles = new();
 
-        [Header("Profiles")]
-        [SerializeField] private HeadBobProfile _idleProfile;
-        [SerializeField] private HeadBobProfile _walkProfile;
-        [SerializeField] private HeadBobProfile _jumpProfile;
-
-        [Header("Settings")]
-        [Tooltip("Horizontal speed (m/s) required to switch to the walk profile.")]
-        [SerializeField] private float _walkThreshold = 0.5f;
-
-        [Tooltip("Automatically trigger the jump profile when the player leaves the ground.")]
-        [SerializeField] private bool _autoDetectJump = true;
+        [Tooltip("State activated on Start. Must match one of the names above.")]
+        [SerializeField] private string _defaultState;
 
         [Tooltip("Output smoothing. Higher = snappier. Recommended: 18–30.")]
         [SerializeField] [Min(1f)] private float _smoothingSpeed = 22f;
 
-        // ── Private state ─────────────────────────────────────────────────
+        // ── Events ────────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Fired when a one-shot profile (loop = false) finishes playing.
+        /// The string parameter is the name of the completed state.
+        /// </summary>
+        public event Action<string> OnStateComplete;
+
+        // ── Public state ──────────────────────────────────────────────────
+
+        public string CurrentState { get; private set; }
+
+        // ── Private ───────────────────────────────────────────────────────
 
         private Vector3    _baseLocalPosition;
         private Vector3    _currentPosOffset;
         private Quaternion _currentRotOffset = Quaternion.identity;
 
-        // Shared clock for idle/walk — never resets, so switching between them
-        // doesn't restart the animation mid-cycle.
-        private float _continuousTime;
+        // Active profile — always starts its timer from 0 on state entry.
+        private HeadBobProfile _activeProfile;
+        private float          _stateTime;
+        private bool           _isOneshot;
 
-        // Jump is one-shot and always starts at phase 0.
-        private bool  _inJump;
-        private float _jumpElapsed;
+        // Previous profile — kept playing during the crossfade so there is no
+        // frozen snapshot; both animations run live and blend between them.
+        private HeadBobProfile _prevProfile;
+        private float          _prevStateTime;
 
-        private bool _prevGrounded;
+        // Crossfade
+        private float _blendT;
+        private float _blendDuration;
 
         // ── Unity ─────────────────────────────────────────────────────────
 
@@ -59,39 +69,46 @@ namespace KOI.HorrorGameEngine
         {
             _baseLocalPosition = transform.localPosition;
 
-            if (_characterController == null)
-                _characterController = GetComponentInParent<CharacterController>();
-
-            if (_characterController == null)
-                Debug.LogWarning("[HeadBob] No CharacterController found.", this);
-            else
-                _prevGrounded = _characterController.isGrounded;
+            if (!string.IsNullOrEmpty(_defaultState))
+                SetState(_defaultState);
         }
 
         private void LateUpdate()
         {
-            if (_characterController == null) return;
+            _stateTime += Time.deltaTime;
 
-            _continuousTime += Time.deltaTime;
+            if (_prevProfile != null)
+                _prevStateTime += Time.deltaTime;
 
-            UpdateState();
-
-            var profile = ActiveProfile;
-
-            // When profile is null smoothly return to the base pose.
-            var targetPos = Vector3.zero;
-            var targetRot = Quaternion.identity;
-
-            if (profile != null)
+            // One-shot completion.
+            if (_isOneshot && _activeProfile != null && _stateTime * _activeProfile.frequency >= 1f)
             {
-                float phase = _inJump
-                    ? Mathf.Clamp01(_jumpElapsed * profile.frequency)
-                    : (_continuousTime * profile.frequency) % 1f;
-
-                profile.Sample(phase, out targetPos, out var euler);
-                targetRot = Quaternion.Euler(euler);
+                var completedState = CurrentState;
+                _isOneshot     = false;
+                _activeProfile = null;
+                OnStateComplete?.Invoke(completedState);
             }
 
+            // Sample active profile (or base pose when null).
+            SampleProfile(_activeProfile, _stateTime, _isOneshot, out var targetPos, out var targetRot);
+
+            // Crossfade: blend the previous profile (still playing) into the new one.
+            if (_blendT < 1f)
+            {
+                _blendT = _blendDuration > 0f
+                    ? Mathf.MoveTowards(_blendT, 1f, Time.deltaTime / _blendDuration)
+                    : 1f;
+
+                SampleProfile(_prevProfile, _prevStateTime, false, out var fromPos, out var fromRot);
+
+                targetPos = Vector3.Lerp(fromPos, targetPos, _blendT);
+                targetRot = Quaternion.Slerp(fromRot, targetRot, _blendT);
+
+                if (_blendT >= 1f)
+                    _prevProfile = null;
+            }
+
+            // Inertial smoothing — gives the bob a sense of weight.
             float smooth = Time.deltaTime * _smoothingSpeed;
             _currentPosOffset = Vector3.Lerp(_currentPosOffset, targetPos, smooth);
             _currentRotOffset = Quaternion.Slerp(_currentRotOffset, targetRot, smooth);
@@ -102,50 +119,56 @@ namespace KOI.HorrorGameEngine
 
         // ── Public API ────────────────────────────────────────────────────
 
-        /// <summary>Manually trigger the jump one-shot profile.</summary>
-        public void TriggerJump()
+        /// <summary>
+        /// Switch to the named state. The new animation always starts from the
+        /// beginning. A crossfade blends the outgoing animation into the new one.
+        /// Looping profiles already active are not restarted — safe to call every frame.
+        /// </summary>
+        public void SetState(string stateName)
         {
-            if (_jumpProfile == null) return;
-            _inJump      = true;
-            _jumpElapsed = 0f;
-            CurrentState = State.Jump;
+            // Don't restart an already-active looping state.
+            if (CurrentState == stateName && _activeProfile != null && _activeProfile.loop)
+                return;
+
+            var profile = _profiles.Find(p => p != null && p.stateName == stateName);
+            if (profile == null)
+            {
+                Debug.LogWarning($"[HeadBob] Profile '{stateName}' not found.", this);
+                return;
+            }
+
+            // Hand off the current profile to the crossfade source.
+            _prevProfile   = _activeProfile;
+            _prevStateTime = _stateTime;
+            _blendT        = 0f;
+            _blendDuration = profile.transitionDuration;
+
+            // New state always starts from the beginning.
+            CurrentState   = stateName;
+            _activeProfile = profile;
+            _isOneshot     = !profile.loop;
+            _stateTime     = 0f;
         }
 
-        // ── Private ───────────────────────────────────────────────────────
+        // ── Helpers ───────────────────────────────────────────────────────
 
-        private void UpdateState()
+        private static void SampleProfile(
+            HeadBobProfile profile, float time, bool oneshot,
+            out Vector3 position, out Quaternion rotation)
         {
-            bool grounded = _characterController.isGrounded;
-
-            if (_inJump)
+            if (profile == null)
             {
-                _jumpElapsed += Time.deltaTime;
-                if (_jumpElapsed * _jumpProfile.frequency >= 1f)
-                    _inJump = false;
-            }
-            else
-            {
-                if (_autoDetectJump && _prevGrounded && !grounded)
-                    TriggerJump();
+                position = Vector3.zero;
+                rotation = Quaternion.identity;
+                return;
             }
 
-            _prevGrounded = grounded;
+            float phase = oneshot
+                ? Mathf.Clamp01(time * profile.frequency)
+                : (time * profile.frequency) % 1f;
 
-            if (!_inJump)
-            {
-                float hSpeed = new Vector3(
-                    _characterController.velocity.x, 0f, _characterController.velocity.z).magnitude;
-
-                CurrentState = (grounded && hSpeed >= _walkThreshold) ? State.Walk : State.Idle;
-            }
+            profile.Sample(phase, out position, out var euler);
+            rotation = Quaternion.Euler(euler);
         }
-
-        private HeadBobProfile ActiveProfile => CurrentState switch
-        {
-            State.Idle => _idleProfile,
-            State.Walk => _walkProfile,
-            State.Jump => _jumpProfile,
-            _          => null,
-        };
     }
 }

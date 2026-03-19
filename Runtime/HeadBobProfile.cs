@@ -21,6 +21,10 @@ namespace KOI.HorrorGameEngine
         // Playback
         // ------------------------------------------------------------------
 
+        [Header("Identity")]
+        [Tooltip("Name used by HeadBob.SetState() to identify this profile.")]
+        public string stateName = "Idle";
+
         [Header("Playback")]
         [Tooltip("Cycles per second.\n" +
                  "Breathing ≈ 0.25 | Walking ≈ 1.6 | Running ≈ 2.6")]
@@ -30,6 +34,10 @@ namespace KOI.HorrorGameEngine
         [Tooltip("When true the profile loops continuously. " +
                  "Disable for one-shot effects such as jump/land impacts.")]
         public bool loop = true;
+
+        [Tooltip("Seconds to blend from the previous state into this one. 0 = instant.")]
+        [Min(0f)]
+        public float transitionDuration = 0.15f;
 
         // ------------------------------------------------------------------
         // Position curves

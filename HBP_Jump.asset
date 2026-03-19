@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3f72c1d8b4e5f69c2d1087e3a4b9f21, type: 3}
   m_Name: HBP_Jump
   m_EditorClassIdentifier: HorrorGameEngine.Runtime::KOI.HorrorGameEngine.HeadBobProfile
+  stateName: Jump
   frequency: 0.9
   loop: 0
   posX:

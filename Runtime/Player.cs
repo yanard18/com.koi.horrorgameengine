@@ -22,17 +22,22 @@ namespace KOI.HorrorGameEngine
         [SerializeField] private float _groundCoyoteTime = 0.15f;
         [SerializeField] private float _jumpCoyoteTime = 0.1f;
 
+        [Header("Head Bob")]
+        [SerializeField] private HeadBob _headBob;
+        [SerializeField] private float   _walkThreshold = 0.5f;
+
         private CharacterController _controller;
         private Vector3 _velocity;
         private Vector3 _moveVelocity;
 
         private float _lastGroundedTime;
         private float _lastJumpPressedTime;
+        private bool  _wasGrounded;
 
         private void Start()
         {
-            _controller = GetComponent<CharacterController>();
-            _lastGroundedTime = -1f;
+            _controller  = GetComponent<CharacterController>();
+            _lastGroundedTime    = -1f;
             _lastJumpPressedTime = -1f;
         }
 
@@ -41,8 +46,10 @@ namespace KOI.HorrorGameEngine
             HandleTimers();
             HandleMovement();
             HandleGravityAndJump();
-            
+
             _controller.Move((_moveVelocity + _velocity) * Time.deltaTime);
+
+            UpdateHeadBob();
         }
 
         private void HandleTimers()
@@ -99,6 +106,26 @@ namespace KOI.HorrorGameEngine
             }
 
             _velocity.y += _gravity * Time.deltaTime;
+        }
+
+        private void UpdateHeadBob()
+        {
+            if (_headBob == null) return;
+
+            var grounded = _controller.isGrounded;
+
+            // Lift-off — trigger jump one-shot.
+            if (_wasGrounded && !grounded)
+                _headBob.SetState("Jump");
+
+            // Looping states — only when grounded.
+            if (grounded)
+            {
+                float hSpeed = new Vector3(_moveVelocity.x, 0f, _moveVelocity.z).magnitude;
+                _headBob.SetState(hSpeed >= _walkThreshold ? "Walk" : "Idle");
+            }
+
+            _wasGrounded = grounded;
         }
     }
 }
