@@ -35,7 +35,7 @@ namespace KOI.HorrorGameEngine
 
         /// <summary>
         /// Fired when a one-shot profile (loop = false) finishes playing.
-        /// The string parameter is the name of the completed state.
+        /// Parameter is the name of the completed state.
         /// </summary>
         public event Action<string> OnStateComplete;
 
@@ -49,15 +49,13 @@ namespace KOI.HorrorGameEngine
         private Vector3    _currentPosOffset;
         private Quaternion _currentRotOffset = Quaternion.identity;
 
-        // Active profile — always starts its timer from 0 on state entry.
-        private HeadBobProfile _activeProfile;
-        private float          _stateTime;
-        private bool           _isOneshot;
+        // Incoming state — timer always starts at 0 on SetState.
+        private HeadBobProfile _to;
+        private float          _toTime;
 
-        // Previous profile — kept playing during the crossfade so there is no
-        // frozen snapshot; both animations run live and blend between them.
-        private HeadBobProfile _prevProfile;
-        private float          _prevStateTime;
+        // Outgoing state — keeps playing during the crossfade.
+        private HeadBobProfile _from;
+        private float          _fromTime;
 
         // Crossfade
         private float _blendT;
@@ -75,41 +73,39 @@ namespace KOI.HorrorGameEngine
 
         private void LateUpdate()
         {
-            _stateTime += Time.deltaTime;
-
-            if (_prevProfile != null)
-                _prevStateTime += Time.deltaTime;
+            // Advance both timers independently.
+            _toTime   += Time.deltaTime;
+            _fromTime += Time.deltaTime;
 
             // One-shot completion.
-            if (_isOneshot && _activeProfile != null && _stateTime * _activeProfile.frequency >= 1f)
+            if (_to != null && !_to.loop && _toTime * _to.frequency >= 1f)
             {
-                var completedState = CurrentState;
-                _isOneshot     = false;
-                _activeProfile = null;
-                OnStateComplete?.Invoke(completedState);
+                var completed = CurrentState;
+                _to          = null;
+                _from        = null;
+                _blendT      = 1f;
+                CurrentState = null;
+                OnStateComplete?.Invoke(completed);
             }
 
-            // Sample active profile (or base pose when null).
-            SampleProfile(_activeProfile, _stateTime, _isOneshot, out var targetPos, out var targetRot);
+            // Sample the incoming profile.
+            Sample(_to, _toTime, out var targetPos, out var targetRot);
 
-            // Crossfade: blend the previous profile (still playing) into the new one.
+            // Crossfade: blend the outgoing profile (still playing) into the incoming.
             if (_blendT < 1f)
             {
-                _blendT = _blendDuration > 0f
-                    ? Mathf.MoveTowards(_blendT, 1f, Time.deltaTime / _blendDuration)
-                    : 1f;
+                _blendT = Mathf.MoveTowards(_blendT, 1f, Time.deltaTime / _blendDuration);
 
-                SampleProfile(_prevProfile, _prevStateTime, false, out var fromPos, out var fromRot);
-
+                Sample(_from, _fromTime, out var fromPos, out var fromRot);
                 targetPos = Vector3.Lerp(fromPos, targetPos, _blendT);
                 targetRot = Quaternion.Slerp(fromRot, targetRot, _blendT);
 
                 if (_blendT >= 1f)
-                    _prevProfile = null;
+                    _from = null;
             }
 
-            // Inertial smoothing — gives the bob a sense of weight.
-            float smooth = Time.deltaTime * _smoothingSpeed;
+            // Inertial smoothing.
+            float smooth      = Time.deltaTime * _smoothingSpeed;
             _currentPosOffset = Vector3.Lerp(_currentPosOffset, targetPos, smooth);
             _currentRotOffset = Quaternion.Slerp(_currentRotOffset, targetRot, smooth);
 
@@ -120,14 +116,13 @@ namespace KOI.HorrorGameEngine
         // ── Public API ────────────────────────────────────────────────────
 
         /// <summary>
-        /// Switch to the named state. The new animation always starts from the
-        /// beginning. A crossfade blends the outgoing animation into the new one.
+        /// Switch to the named state. The new animation always starts from phase 0.
+        /// A crossfade blends the outgoing animation into the new one.
         /// Looping profiles already active are not restarted — safe to call every frame.
         /// </summary>
         public void SetState(string stateName)
         {
-            // Don't restart an already-active looping state.
-            if (CurrentState == stateName && _activeProfile != null && _activeProfile.loop)
+            if (CurrentState == stateName && _to != null && _to.loop)
                 return;
 
             var profile = _profiles.Find(p => p != null && p.stateName == stateName);
@@ -137,23 +132,24 @@ namespace KOI.HorrorGameEngine
                 return;
             }
 
-            // Hand off the current profile to the crossfade source.
-            _prevProfile   = _activeProfile;
-            _prevStateTime = _stateTime;
-            _blendT        = 0f;
-            _blendDuration = profile.transitionDuration;
+            // Outgoing profile keeps playing from where it was.
+            _from     = _to;
+            _fromTime = _toTime;
 
-            // New state always starts from the beginning.
-            CurrentState   = stateName;
-            _activeProfile = profile;
-            _isOneshot     = !profile.loop;
-            _stateTime     = 0f;
+            // Incoming profile always starts from 0.
+            _to          = profile;
+            _toTime      = 0f;
+            CurrentState = stateName;
+
+            // Start crossfade. If duration is 0, skip blend entirely.
+            _blendDuration = profile.transitionDuration;
+            _blendT        = profile.transitionDuration > 0f ? 0f : 1f;
         }
 
         // ── Helpers ───────────────────────────────────────────────────────
 
-        private static void SampleProfile(
-            HeadBobProfile profile, float time, bool oneshot,
+        /// <summary>Samples a profile at the correct phase for its type. Null profile returns base pose.</summary>
+        private static void Sample(HeadBobProfile profile, float time,
             out Vector3 position, out Quaternion rotation)
         {
             if (profile == null)
@@ -163,9 +159,8 @@ namespace KOI.HorrorGameEngine
                 return;
             }
 
-            float phase = oneshot
-                ? Mathf.Clamp01(time * profile.frequency)
-                : (time * profile.frequency) % 1f;
+            float raw   = time * profile.frequency;
+            float phase = profile.loop ? raw % 1f : Mathf.Clamp01(raw);
 
             profile.Sample(phase, out position, out var euler);
             rotation = Quaternion.Euler(euler);
