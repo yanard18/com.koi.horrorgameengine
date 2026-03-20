@@ -17,10 +17,6 @@ namespace KOI.HorrorGameEngine
     [CreateAssetMenu(fileName = "HeadBobProfile", menuName = "KOI/Head Bob Profile", order = 10)]
     public class HeadBobProfile : ScriptableObject
     {
-        // ------------------------------------------------------------------
-        // Playback
-        // ------------------------------------------------------------------
-
         [Header("Identity")]
         [Tooltip("Name used by HeadBob.SetState() to identify this profile.")]
         public string stateName = "Idle";
@@ -39,10 +35,6 @@ namespace KOI.HorrorGameEngine
         [Min(0f)]
         public float transitionDuration = 0.15f;
 
-        // ------------------------------------------------------------------
-        // Position curves
-        // ------------------------------------------------------------------
-
         [Header("Position Curves  (output × positionAmplitude = metres)")]
         [Tooltip("Lateral (X) sway — left/right.  " +
                  "One full sine cycle produces one stride sway.")]
@@ -57,10 +49,6 @@ namespace KOI.HorrorGameEngine
                  "A negative-abs-sine is the classic choice.")]
         public AnimationCurve posZ = AnimationCurve.Constant(0f, 1f, 0f);
 
-        // ------------------------------------------------------------------
-        // Rotation curves
-        // ------------------------------------------------------------------
-
         [Header("Rotation Curves  (output × rotationAmplitude = degrees)")]
         [Tooltip("Pitch (X) — nod up/down.  Usually follows posY.")]
         public AnimationCurve rotX = AnimationCurve.Constant(0f, 1f, 0f);
@@ -71,10 +59,6 @@ namespace KOI.HorrorGameEngine
         [Tooltip("Roll (Z) — tilt left/right.  Usually mirrors posX (lean into each step).")]
         public AnimationCurve rotZ = AnimationCurve.Constant(0f, 1f, 0f);
 
-        // ------------------------------------------------------------------
-        // Amplitude
-        // ------------------------------------------------------------------
-
         [Header("Amplitude")]
         [Min(0f)]
         [Tooltip("Global scale applied to all position curves (metres).")]
@@ -84,62 +68,48 @@ namespace KOI.HorrorGameEngine
         [Tooltip("Global scale applied to all rotation curves (degrees).")]
         public float rotationAmplitude = 1.0f;
 
-        // ------------------------------------------------------------------
-        // Sampling
-        // ------------------------------------------------------------------
-
         /// <summary>
         /// Returns the position offset and Euler-angle offset for the given
         /// normalised <paramref name="phase"/> in [0, 1].
         /// </summary>
         public void Sample(float phase, out Vector3 position, out Vector3 eulerAngles)
         {
-            float px = posX != null ? posX.Evaluate(phase) : 0f;
-            float py = posY != null ? posY.Evaluate(phase) : 0f;
-            float pz = posZ != null ? posZ.Evaluate(phase) : 0f;
+            var px = posX != null ? posX.Evaluate(phase) : 0f;
+            var py = posY != null ? posY.Evaluate(phase) : 0f;
+            var pz = posZ != null ? posZ.Evaluate(phase) : 0f;
             position = new Vector3(px, py, pz) * positionAmplitude;
 
-            float rx = rotX != null ? rotX.Evaluate(phase) : 0f;
-            float ry = rotY != null ? rotY.Evaluate(phase) : 0f;
-            float rz = rotZ != null ? rotZ.Evaluate(phase) : 0f;
+            var rx = rotX != null ? rotX.Evaluate(phase) : 0f;
+            var ry = rotY != null ? rotY.Evaluate(phase) : 0f;
+            var rz = rotZ != null ? rotZ.Evaluate(phase) : 0f;
             eulerAngles = new Vector3(rx, ry, rz) * rotationAmplitude;
         }
 
-        // ------------------------------------------------------------------
-        // Default curve helpers (called from Reset so the asset has sensible
-        // values the moment it is created via the CreateAssetMenu)
-        // ------------------------------------------------------------------
-
         private void Reset()
         {
-            // Walking defaults.  Designers can override every curve freely.
             frequency          = 1.6f;
             loop               = true;
             positionAmplitude  = 0.04f;
             rotationAmplitude  = 1.2f;
 
-            posX = BuildSine(1, 8);          // single sway, ±1
-            posY = BuildSine(2, 16);         // double bob, ±1
-            posZ = BuildNegativeAbsSine(2, 16); // forward dip, 0 to −1
-            rotX = BuildSine(2, 16);         // pitch follows posY
-            rotY = BuildFlat();              // no yaw
-            rotZ = BuildSine(1, 8);          // roll follows posX
+            posX = BuildSine(1, 8);
+            posY = BuildSine(2, 16);
+            posZ = BuildNegativeAbsSine(2, 16);
+            rotX = BuildSine(2, 16);
+            rotY = BuildFlat();
+            rotZ = BuildSine(1, 8);
         }
-
-        // ------------------------------------------------------------------
-        // Curve factories
-        // ------------------------------------------------------------------
 
         /// <summary>
         /// Sine with <paramref name="cycles"/> full oscillations over [0, 1].
         /// </summary>
         public static AnimationCurve BuildSine(int cycles = 1, int samplesPerCycle = 8)
         {
-            int total = cycles * samplesPerCycle;
+            var total = cycles * samplesPerCycle;
             var curve = new AnimationCurve();
-            for (int i = 0; i <= total; i++)
+            for (var i = 0; i <= total; i++)
             {
-                float t = (float)i / total;
+                var t = (float)i / total;
                 curve.AddKey(t, Mathf.Sin(t * Mathf.PI * 2f * cycles));
             }
             SmoothAll(curve);
@@ -152,11 +122,11 @@ namespace KOI.HorrorGameEngine
         /// </summary>
         public static AnimationCurve BuildNegativeAbsSine(int cycles = 2, int samplesPerCycle = 8)
         {
-            int total = cycles * samplesPerCycle;
+            var total = cycles * samplesPerCycle;
             var curve = new AnimationCurve();
-            for (int i = 0; i <= total; i++)
+            for (var i = 0; i <= total; i++)
             {
-                float t = (float)i / total;
+                var t = (float)i / total;
                 curve.AddKey(t, -Mathf.Abs(Mathf.Sin(t * Mathf.PI * 2f * cycles)));
             }
             SmoothAll(curve);
@@ -185,7 +155,7 @@ namespace KOI.HorrorGameEngine
 
         private static void SmoothAll(AnimationCurve curve)
         {
-            for (int i = 0; i < curve.length; i++)
+            for (var i = 0; i < curve.length; i++)
                 curve.SmoothTangents(i, 0f);
         }
     }
