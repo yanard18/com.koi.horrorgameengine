@@ -1,5 +1,56 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &380855246091613497
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 785843543813578623}
+  - component: {fileID: 6016996961185338927}
+  m_Layer: 0
+  m_Name: CameraHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &785843543813578623
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380855246091613497}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5000001, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 383257546536436178}
+  m_Father: {fileID: 444875449421910815}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6016996961185338927
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 380855246091613497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bf4288439e1c177b86a1199f7251dfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: HorrorGameEngine.Runtime::KOI.HorrorGameEngine.HeadBob
+  _profiles:
+  - {fileID: 11400000, guid: aaa5b04ccda7daa4b8f736028aa21e86, type: 2}
+  - {fileID: 11400000, guid: f673ddabee8b9e2b4a886878f401f208, type: 2}
+  - {fileID: 11400000, guid: 57f7e9e8c6a0c8be4a235a4d11676608, type: 2}
+  _defaultState: Idle
+  _smoothingSpeed: 22
 --- !u!1 &3157949447705770711
 GameObject:
   m_ObjectHideFlags: 0
@@ -27,11 +78,11 @@ Transform:
   m_GameObject: {fileID: 3157949447705770711}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.9, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 383257546536436178}
+  - {fileID: 785843543813578623}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &983279838254841516
@@ -71,9 +122,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65ed3642478d2a158b9bc781c9b9015d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: HorrorGameEngine.Runtime::KOI.HorrorGameEngine.Player
-  _moveSpeed: 12
+  _maxSpeed: 8
+  _groundAcceleration: 25
+  _groundDeceleration: 25
+  _maxAirSpeed: 6
+  _airAcceleration: 15
+  _airDeceleration: 15
+  _canJump: 1
+  _jumpHeight: 1.5
   _gravity: -9.81
-  _jumpHeight: 3
+  _groundCoyoteTime: 0.15
+  _jumpCoyoteTime: 0.1
+  _headBob: {fileID: 6016996961185338927}
+  _walkThreshold: 0.5
 --- !u!1 &3813953675775304865
 GameObject:
   m_ObjectHideFlags: 0
@@ -103,11 +164,11 @@ Transform:
   m_GameObject: {fileID: 3813953675775304865}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 444875449421910815}
+  m_Father: {fileID: 785843543813578623}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!20 &7343563433118277880
 Camera:
@@ -224,6 +285,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7788342cf99b4f0e813651d28fa6807f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: HorrorGameEngine.Runtime::MouseLook
+  _playerCharacter: {fileID: 3157949447705770711}
   _mouseSensitivity: 2
-  _invertY: 0
-  _playerBody: {fileID: 444875449421910815}
+  _interpolationSpeed: 15
+  _minPitch: -90
+  _maxPitch: 90
