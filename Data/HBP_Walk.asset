@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: HBP_Walk
   m_EditorClassIdentifier: HorrorGameEngine.Runtime::KOI.HorrorGameEngine.HeadBobProfile
   stateName: Walk
-  frequency: 1.6
+  frequency: 0.8
   loop: 1
+  transitionDuration: 0.15
   posX:
     serializedVersion: 2
     m_Curve:

@@ -15,6 +15,7 @@ MonoBehaviour:
   stateName: Idle
   frequency: 0.25
   loop: 1
+  transitionDuration: 0.15
   posX:
     serializedVersion: 2
     m_Curve:
@@ -196,4 +197,4 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   positionAmplitude: 0
-  rotationAmplitude: 1000
+  rotationAmplitude: 50
